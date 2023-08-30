@@ -1,35 +1,54 @@
 #include "binary_trees.h"
-
 /**
- * binary_tree_is_complete - Checks if a binary tree is complete
- * @tree: Pointer to the root node of the tree to check
- *
- * Return: 1 if the tree is complete, 0 otherwise or if tree is NULL
+ * binary_tree_nodes - how many nodes on a tree
+ * @tree: root node of tree
+ * Return: number of nodes
  */
-int binary_tree_is_complete(const binary_tree_t *tree)
+size_t binary_tree_nodes(const binary_tree_t *tree)
 {
+
+	size_t nodes_right, nodes_left;
+
 	if (tree == NULL)
 		return (0);
 
-	return is_complete_recursive(tree, 0, binary_tree_size(tree));
-}
+	nodes_left = binary_tree_nodes(tree->left) + 1;
+	nodes_right = binary_tree_nodes(tree->right) + 1;
+	return (nodes_right + nodes_left - 1);
 
+}
 /**
- * is_complete_recursive - Helper function to recursively check completeness
- * @tree: Pointer to the current subtree to check
- * @index: Index of the current node
- * @count: Total number of nodes in the entire tree
- *
- * Return: 1 if the subtree is complete, 0 otherwise
+ * is_complete - is binary tree complete using index & num nodes
+ * @tree: root node
+ * @index: index of node
+ * @nodes: num of nodes
+ * Return: 0 or 1
  */
-int is_complete_recursive(const binary_tree_t *tree, size_t index, size_t count)
+int is_complete(const binary_tree_t *tree, int index, int nodes)
 {
 	if (tree == NULL)
 		return (1);
 
-	if (index >= count)
+	if (index >= nodes)
 		return (0);
 
-	return (is_complete_recursive(tree->left, 2 * index + 1, count) &&
-	        is_complete_recursive(tree->right, 2 * index + 2, count));
+	return (is_complete(tree->left, 2 * index + 1, nodes) &&
+		is_complete(tree->right, 2 * index + 2, nodes));
+}
+/**
+ * binary_tree_is_complete - is binary tree complete (all to left)
+ * @tree: root node
+ * Return: 1 if true 0 if false
+ *
+ */
+int binary_tree_is_complete(const binary_tree_t *tree)
+{
+	int index = 0;
+	size_t nodes = binary_tree_nodes(tree);
+
+	if (tree == NULL)
+		return (0);
+
+	return (is_complete(tree, index, (int)nodes));
+
 }
